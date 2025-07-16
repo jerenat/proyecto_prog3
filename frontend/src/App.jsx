@@ -1,48 +1,62 @@
 // -- LIBRERIAS GLOBALES
-import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 
 // -- LIBRERIAS LOCALES
 
 // -- CONTEXT
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute, PublicRoute } from "./context/RouterGuard";
 
 // -- SCREENS
+
+// -- Sitios de Log In / Not Found
 import Index from "./screens/Index";
 import Auth from "./screens/Auth";
 import Home from "./screens/Home";
-import NewPortfolio from "./screens/New";
-import Portfolio from "./screens/Portfolio";
 import NotFound from "./screens/NotFound";
 
+// -- Portafolio
+import NewPortfolio from "./screens/New";
+
 // -- COMPONENTS
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar"; // Barra de Navegacion
+import Footer from "./components/Footer"; // Pié de Pagina
 
 function App() {
-
   return (
     <AuthProvider>
       <BrowserRouter>
-      <Navbar />
-        <Routes>
-          {/* -- rutas publicas -- */}
-          <Route element={<PublicRoute />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Auth />} />
-          </Route>
+        <div className="h-screen flex flex-col">
+          <Navbar />
+          <div className="flex-1">
+            <Routes>
+              {/* -- rutas publicas -- */}
+              <Route element={<PublicRoute />}>
+                <Route path="/" element={<Index />} />
+                <Route
+                  path="/login"
+                  element={
+                    <>
+                      <Auth />
+                      <Footer />
+                    </>
+                  }
+                />
+              </Route>
 
-          {/* -- rutas protegidas -- */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/new" element={<NewPortfolio />} />
-            <Route path="/edit/:id" element={<NewPortfolio />} />
-            <Route path="/portfolio/:id" element={<Portfolio />} />
-          </Route>
+              {/* -- rutas protegidas -- */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/new" element={<NewPortfolio />} />
+                <Route path="/edit/:id" element={<NewPortfolio />} />
+              </Route>
 
-          <Route path="*" element={<NotFound/>} />
-        </Routes>
+              {/* -- rutas no encontradas -- */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+        </div>
       </BrowserRouter>
     </AuthProvider>
   );

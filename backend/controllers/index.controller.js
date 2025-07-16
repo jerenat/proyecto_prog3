@@ -1,6 +1,9 @@
+// -- LIBRERIAS GLOBALES
 const fs = require("fs");
 const path = require("path");
 const sanitizeHtml = require("sanitize-html");
+
+// -- LIBRERIAS LOCALES
 const Portfolio = require("../models/Portfolio");
 
 const portfolioController = {};
@@ -104,6 +107,7 @@ portfolioController.editPortfolioById = async (req, res) => {
     }
 
     // Actualizar campos
+    portfolio.userid = id || portfolio.userid;
     portfolio.title = title || portfolio.title;
     portfolio.description = description || portfolio.description;
     portfolio.technologies = techArray || portfolio.technologies;

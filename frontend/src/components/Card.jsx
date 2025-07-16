@@ -1,5 +1,5 @@
+// -- LIBRERIAS GLOBALES
 import React, { useState } from "react";
-import { NoButton, ButtonLink } from "./Button";
 
 // -- Iconos
 import { MdModeEditOutline, MdDelete } from "react-icons/md";
@@ -7,6 +7,9 @@ import { FaStar } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import { LuStarOff } from "react-icons/lu";
 
+// -- LIBRERIAS LOCALES
+import { NoButton, ButtonLink } from "./Button";
+import { getColorForTech } from "../components/Components";
 // -- Imagen por defecto
 import NoCardPhoto from "../assets/images/no_card_photo.png";
 
@@ -14,6 +17,7 @@ function Card({
   project,
   userId,
   showButtons = true,
+  showIcons = true,
   onToggleFeatured,
   onDelete,
 }) {
@@ -54,21 +58,25 @@ function Card({
         className="rounded-md object-cover"
       />
 
-      <h3 className="text-xl font-bold mt-4">{project.title}</h3>
-      <p className="text-sm text-white mt-2">{project.description}</p>
-      <p className="text-sm text-white mt-2">
-        <strong>Tecnologías:</strong> {project.technologies.join(", ")}
-      </p>
+      <div className="flex flex-col w-full justify-center items-center gap-5">
+        <h3 className="text-2xl font-bold mt-4">{project.title}</h3>
+        <p className="text-sm text-white mt-2">{project.description}</p>
+        <div className="flex flex-wrap gap-2 mt-2 justify-center">
+          {project.technologies.map((tech, index) => (
+            <span
+              key={index}
+              className={`${getColorForTech(
+                tech
+              )} text-white text-xs font-semibold px-3 py-1 rounded-full shadow`}
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {showButtons && (
         <div className="my-8 w-full px-6 flex flex-col gap-5">
-          <ButtonLink
-            text={"Ver Portafolio"}
-            className="w-full font-semibold"
-            color="blue"
-            to={`/portfolio/${project.id}`}
-          />
-
           {project.featured ? (
             <ButtonLink
               onClick={() => onToggleFeatured(project.id)}
@@ -87,7 +95,7 @@ function Card({
       )}
 
       {/* Solo mostrar los botones si el usuario es el dueño */}
-      {esPropietario && (
+      {esPropietario && showIcons && (
         <div className="flex flex-row w-full gap-5 justify-center mt-4">
           <NoButton
             icon={<MdModeEditOutline size={28} />}

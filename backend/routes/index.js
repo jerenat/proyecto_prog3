@@ -45,7 +45,7 @@ router.delete(
 
 // Editar portafolio por ID
 router.put(
-  "/portfolio/:id",
+  "/portfolio/:portfolioId",
   decodeToken,
   upload.single("image"), // Imagen nueva opcional
   portfolioController.editPortfolioById

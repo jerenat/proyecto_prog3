@@ -1,41 +1,49 @@
+// -- LIBRERIAS GLOBALES
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { postFormPortfolio, getPortfolioById } from "../api/portfolio.js";
-import Card from "../components/Card";
-import { ButtonLink } from "../components/Button";
+
+// -- LIBRERIAS Y COMPONENTES LOCALES
+import { useAuth } from "../context/AuthContext"; // Contexto de Usuario
+import {
+  postFormPortfolio, // crear
+  putFormPortfolio, // editar
+  getPortfolioById, // obtener
+} from "../api/portfolio.js"; // portafolio API
+
+import Card from "../components/Card"; // Tarjetas
+import { ButtonLink } from "../components/Button"; // Botones
 
 function NewPortfolio() {
+  // -- Parámetros
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  // -- Estados
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [technologies, setTechnologies] = useState("");
-  const [image, setImage] = useState(null); // Puede ser File o string
+  const [image, setImage] = useState(null);
   const [isPublic, setIsPublic] = useState("0");
   const [preview, setPreview] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
+  // Obtener datos si hay ID (edición)
   useEffect(() => {
     const fetchProjectById = async () => {
       try {
-        const getFullPortfolio = await getPortfolioById(id);
-        const [getFullData] = getFullPortfolio.data;
+        const { data } = await getPortfolioById(id);
+        const portfolioData = Array.isArray(data) ? data[0] : data;
 
-        setTitle(getFullData.title || "");
-        setDescription(getFullData.description || "");
-        setTechnologies(getFullData.technologies.join(", ") || "");
-        setImage(getFullData.image || null);
-
-        if (
-          Array.isArray(getFullPortfolio.data) &&
-          getFullPortfolio.data.length > 0
-        ) {
-          setPreview(getFullPortfolio.data[0]); // Si es array
-        } else {
-          setPreview(getFullPortfolio.data); // Si es objeto directo
-        }
+        setTitle(portfolioData.title || "");
+        setDescription(portfolioData.description || "");
+        setTechnologies(
+          Array.isArray(portfolioData.technologies)
+            ? portfolioData.technologies.join(", ")
+            : ""
+        );
+        setImage(null); // Resetear porque puede venir como string o null
+        setPreview(portfolioData);
       } catch (err) {
         console.error("Error al obtener el portafolio.");
       }
@@ -44,18 +52,19 @@ function NewPortfolio() {
     if (id) fetchProjectById();
   }, [id]);
 
+  // Manejo de archivo
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
-
     if (file) {
       const previewUrl = URL.createObjectURL(file);
-      setPreview(previewUrl);
+      setPreviewImage(previewUrl);
     } else {
-      setPreview(null);
+      setPreviewImage(null);
     }
   };
 
+  // Envío de formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -64,25 +73,29 @@ function NewPortfolio() {
     formData.append("description", description);
     formData.append("technologies", technologies);
     formData.append("isPublic", isPublic);
-    if (image instanceof File) {
-      formData.append("image", image);
-    }
+    if (image) formData.append("image", image);
 
     try {
-      const response = await postFormPortfolio(formData);
+      let response;
 
-      if (response.status === 201) {
-        const { data } = response;
-        alert("Portafolio creado con exito.");
+      // Si hay ID => editar
+      if (id) {
+        response = await putFormPortfolio(id, formData);
+        if (response.status === 200) {
+          alert("Portafolio actualizado con éxito.");
+        }
+      } else {
+        // Si no hay ID => crear
+        response = await postFormPortfolio(formData);
+        if (response.status === 201) {
+          alert("Portafolio creado con éxito.");
+        }
+      }
 
-        // Reset
-        setTitle("");
-        setDescription("");
-        setTechnologies("");
-        setImage(null);
-        setPreview(null);
-
-        navigate(`/portfolio/${data.pid}`);
+      // Redireccionar después de crear o editar
+      if (response?.data?.pid || response?.data?.id) {
+        const pid = response.data.pid || response.data.id;
+        navigate(`/portfolio/${pid}`);
       }
     } catch (err) {
       console.error(err);
@@ -104,7 +117,7 @@ function NewPortfolio() {
           onSubmit={handleSubmit}
           className="flex flex-col flex-1 bg-white p-6 rounded-lg shadow-lg"
         >
-          {/* IMAGEN */}
+          {/* Imagen */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Imagen
@@ -115,16 +128,16 @@ function NewPortfolio() {
               onChange={handleImageChange}
               className="shadow appearance-none border-gray-300 rounded w-full py-2 px-3 text-gray-700"
             />
-            {preview && typeof preview === "string" && (
+            {previewImage && (
               <img
-                src={preview}
+                src={previewImage}
                 alt="Vista previa"
-                className="mt-4 rounded-md shadow border border-gray-300"
+                className="mt-4 rounded-md shadow border border-gray-300 max-h-60 object-contain"
               />
             )}
           </div>
 
-          {/* TITULO */}
+          {/* Título */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Título
@@ -139,7 +152,7 @@ function NewPortfolio() {
             />
           </div>
 
-          {/* DESCRIPCIÓN */}
+          {/* Descripción */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Descripción
@@ -153,7 +166,7 @@ function NewPortfolio() {
             />
           </div>
 
-          {/* TECNOLOGÍAS */}
+          {/* Tecnologías */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Tecnologías
@@ -168,7 +181,7 @@ function NewPortfolio() {
             />
           </div>
 
-          {/* PERFIL */}
+          {/* Perfil */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Perfil
@@ -183,7 +196,7 @@ function NewPortfolio() {
             </select>
           </div>
 
-          {/* BOTÓN */}
+          {/* Botón */}
           <div className="mt-auto">
             <ButtonLink
               submit={true}
@@ -195,7 +208,7 @@ function NewPortfolio() {
       </section>
 
       {/* VISTA PREVIA */}
-      {id && preview && typeof preview === "object" && (
+      {id && preview && (
         <section className="w-full md:w-1/2 p-6 rounded-lg min-h-[600px]">
           <div className="title mb-4">
             <h2 className="text-2xl font-light text-center">Vista Previa</h2>
@@ -213,6 +226,7 @@ function NewPortfolio() {
               userId={user?.id}
               onToggleFeatured={() => {}}
               showButtons={false}
+              showIcons={false}
             />
           </div>
         </section>

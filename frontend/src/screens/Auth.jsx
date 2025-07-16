@@ -1,7 +1,10 @@
+// -- LIBRERIAS GLOBALES
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { ButtonLink } from "../components/Button";
-import { useAuth } from "../context/AuthContext";
+
+// -- LIBRERIAS Y COMPONENTES LOCALES
+import { useAuth } from "../context/AuthContext"; // Contexto de Usuario
+import { ButtonLink } from "../components/Button"; // Botones
 
 function Auth() {
   const { signup, signin } = useAuth();

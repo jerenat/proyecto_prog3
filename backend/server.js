@@ -31,7 +31,7 @@ app.use(cookieParser());
 
 // Logging
 if (process.env.NODE_ENV !== "test") {
-  //app.use(morgan('combined'));
+  app.use(morgan('combined'));
 }
 
 // Rutas estáticas públicas con CORS habilitado correctamente
@@ -70,10 +70,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// // Manejo de rutas no encontradas
-// app.use('*', (req, res) => {
-//   res.status(404).json({ error: 'Route not found' });
-// });
+// Manejo de rutas no encontradas
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
 
 // Inicializar servidor
 async function startServer() {

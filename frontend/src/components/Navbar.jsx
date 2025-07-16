@@ -53,15 +53,23 @@ function Navbar() {
           )}
         </li>
         {isAuthenticated ? (
+          <>
           <li>
-            <a href="/home" className="font-medium text-[1.1rem] outline-none">
-              Mi Portfolio
+            <a
+              href="https://www.canva.com/whats-new"
+              className="font-medium text-[1.1rem] outline-none"
+            >
+              Novedades
             </a>
           </li>
+          <li>
+            <a href="https://www.canva.com/download/windows/" className="font-medium text-[1.1rem] outline-none">Descargar</a>
+          </li>
+          </>
         ) : (
           <li>
-            <a href="/login" className="font-medium text-[1.1rem] outline-none">
-              Login
+            <a href="https://www.canva.com/es_es/pro/" className="font-medium text-[1.1rem] outline-none">
+              Planes
             </a>
           </li>
         )}
@@ -94,8 +102,8 @@ function Navbar() {
           </>
         ) : (
           <li className="flex flex-row gap-2 items-center align-center">
-            <FaRegUserCircle size={25}/>
-           <h2>Invitado</h2>
+            <FaRegUserCircle size={25} />
+            <h2>Invitado</h2>
           </li>
         )}
       </ul>

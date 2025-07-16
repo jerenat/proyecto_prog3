@@ -1,15 +1,14 @@
-import React from "react";
-import { IoIosLogIn } from "react-icons/io";
-import { FaLockOpen } from "react-icons/fa";
+// -- LIBRERIAS GLOBALES
+import { IoIosLogIn } from "react-icons/io"; // Iconos
 
-
-import BackgroundImage from "../assets/background_index.webp";
-import { ButtonLink } from "../components/Button";
+// -- LIBRERIAS Y COMPONENTES LOCALES
+import BackgroundImage from "../assets/background_index.webp"; // Imagen de Background de Inicio
+import { ButtonLink } from "../components/Button"; // Botones
 
 function Index() {
   return (
     <div
-      className="w-full h-screen bg-cover bg-center bg-fixed flex items-center justify-center"
+      className="w-full h-screen bg-cover bg-center bg-fixed flex items-center justify-center overflow-hidden"
       style={{
         backgroundImage: `url(${BackgroundImage})`,
       }}
@@ -37,10 +36,11 @@ function Index() {
         {/* -- CUADRO DE LOGIN -- */}
         <div>
           <div className="bg-gray-900 p-6 rounded-lg shadow-lg max-w-80 mx-auto mt-10 flex flex-col items-center text-white gap-10">
-
             {/* -- titulo -- */}
             <div className="flex flex-col items-center text-center gap-2">
-              <h2 className="text-2xl font-semibold">Inicia sesion o registrate</h2>
+              <h2 className="text-2xl font-semibold">
+                Inicia sesion o registrate
+              </h2>
               <p className="text-white/60">
                 Usa tu correo electronico u otro servicio para acceder a Canva
                 gratis.
@@ -54,14 +54,15 @@ function Index() {
                 className="text-2xl font-semibold w-full"
                 text={"Iniciar Sesion"}
                 color="blue"
-                icon={<IoIosLogIn/>}
+                icon={<IoIosLogIn />}
               />
             </div>
 
             {/* -- footer -- */}
             <div className="text-white/60 text-sm mt-6 text-center">
               <p>
-                Al continuar, aceptas los Términos y condiciones de uso de Canva. Consulta nuestra Política de privacidad.
+                Al continuar, aceptas los Términos y condiciones de uso de
+                Canva. Consulta nuestra Política de privacidad.
               </p>
             </div>
           </div>

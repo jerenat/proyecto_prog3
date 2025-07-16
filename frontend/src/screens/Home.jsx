@@ -1,8 +1,13 @@
+// -- LIBRERIAS GLOBALES
 import { useState, useEffect } from "react";
 import { RiDeleteBack2Fill } from "react-icons/ri";
+import { FaFilter, FaPlus  } from "react-icons/fa";
+
+
+// -- LIBRERIAS Y COMPONENTES LOCALES
 import Card from "../components/Card";
 import { ButtonLink } from "../components/Button";
-import { tecnologias } from "../datos/proyecto-mock.js";
+import { tecnologias } from "../components/Components.jsx";
 import { getPortfolio, deletePortfolio } from "../api/portfolio.js";
 import { useAuth } from "../context/AuthContext";
 import EmptyList from "../assets/images/empty_list.png";
@@ -70,6 +75,7 @@ function Home() {
       <div className="flex flex-row justify-between items-center w-full my-4">
         <ButtonLink
           text={"Nuevo diseño"}
+          icon={<FaPlus size={18}/>}
           color="green"
           className="font-medium text-[1.1rem]"
           to={"/new"}
@@ -81,9 +87,10 @@ function Home() {
             text={"Tecnologías"}
             color="pink"
             className="font-medium text-[1.1rem]"
+            icon={<FaFilter size={18}/>}
           />
           {menuAbierto && (
-            <ul className="absolute top-14 right-0 bg-white shadow-lg rounded-md py-4 z-10">
+            <ul className="absolute top-14 right-0 bg-white shadow-lg rounded-md py-4 h-56 overflow-y-scroll z-10">
               {tecnologias.map((item, index) => (
                 <li
                   key={index}
